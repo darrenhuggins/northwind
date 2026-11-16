@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 export type User = { id: string; name: string; role: string; region: string; team: string };
 export const PERSONAS: User[] = [
@@ -14,7 +14,12 @@ const Ctx = createContext<{ user: User | null; signIn: (u: User) => void; signOu
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch { return null; } });
   const signIn = (u: User) => { try { localStorage.setItem(KEY, JSON.stringify(u)); } catch { /* ignore */ } setUser(u); };
-  const signOut = () => { try { localStorage.removeItem(KEY); } catch { /* ignore */ } setUser(null); };
+  const signOut = () => { try { localStorage.removeItem(KEY); } catch { /* ignore */ } pendo.clearSession?.(); setUser(null); };
+  // Identify the persona on sign-in and when a stored persona is restored on page load.
+  useEffect(() => {
+    if (!user) return;
+    pendo.identify({ visitor: { id: user.id, full_name: user.name, role: user.role, region: user.region, team: user.team } });
+  }, [user]);
   return <Ctx.Provider value={{ user, signIn, signOut }}>{children}</Ctx.Provider>;
 }
 export const useUser = () => useContext(Ctx);
