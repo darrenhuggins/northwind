@@ -1,7 +1,7 @@
 # Northwind Claims
 
 A deliberately busy demo app, with a different industry application for each prospect, used to show how Novus builds its overview on first scan.
-Front end only, mock data, no backend. Published on GitHub Pages: https://darrenhuggins.github.io/northwind-claims/
+Front end only, mock data, no backend. Published on GitHub Pages: https://darrenhuggins.github.io/northwind/
 
 ## Industries
 
