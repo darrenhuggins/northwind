@@ -1,21 +1,21 @@
 import { useRef, useState } from "react";
-import { agentByKey, AgentKey, Ctx } from "../agents/registry";
+import { agentByKey, AgentKey, AgentSpec, Ctx } from "../agents/registry";
 import { emitAgentEvent, uid } from "../agents/telemetry";
 
 type Msg = { id: string; from: "user" | "agent"; text: string; reaction?: "positive" | "negative" };
 
-export function AgentLauncher({ agent, ctx, slot = 0 }: { agent: AgentKey; ctx?: Ctx; slot?: number }) {
-  const [open, setOpen] = useState(false); const a = agentByKey(agent);
+export function AgentLauncher({ agent, spec, ctx, slot = 0 }: { agent?: AgentKey; spec?: AgentSpec; ctx?: Ctx; slot?: number }) {
+  const [open, setOpen] = useState(false); const a = spec || agentByKey(agent!); agent = a.key as AgentKey;
   return (
     <>
       <button className="agent-fab" style={{ bottom: 20 + slot * 48 }} data-testid={`agent-launch-${agent}`} onClick={() => setOpen(true)}>✦ {a.name}</button>
-      {open && <AgentPanel agent={agent} ctx={ctx || {}} onClose={() => setOpen(false)} />}
+      {open && <AgentPanel a={a} ctx={ctx || {}} onClose={() => setOpen(false)} />}
     </>
   );
 }
 
-export function AgentPanel({ agent, ctx, onClose }: { agent: AgentKey; ctx: Ctx; onClose: () => void }) {
-  const a = agentByKey(agent); const conv = useRef(uid("conv")).current;
+export function AgentPanel({ a, ctx, onClose }: { a: AgentSpec; ctx: Ctx; onClose: () => void }) {
+  const agent = a.key; const conv = useRef(uid("conv")).current;
   const [msgs, setMsgs] = useState<Msg[]>([]); const [text, setText] = useState(""); const [busy, setBusy] = useState(false);
   const send = (t: string) => {
     if (!t.trim() || busy) return;

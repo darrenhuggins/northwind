@@ -1,7 +1,8 @@
 import { adjusters, claims, fraudCases, money, policies, vendors } from "../data";
 
 export type AgentKey = "copilot" | "sentinel" | "intake" | "coverage" | "reserve" | "dispatch";
-export type Ctx = { claimId?: string; policyId?: string; caseId?: string };
+export type Ctx = { claimId?: string; policyId?: string; caseId?: string; recordId?: string };
+export type AgentSpec = { key: string; name: string; tagline: string; suggestions: string[]; reply: (prompt: string, ctx: Ctx) => string };
 export type AgentDef = {
   key: AgentKey; name: string; tagline: string; model: string; owner: string; scope: string[];
   suggestions: string[]; reply: (prompt: string, ctx: Ctx) => string;

@@ -1,7 +1,16 @@
 # Northwind Claims
 
-A deliberately busy insurance claims console used to demo how Novus builds its overview on first scan.
+A deliberately busy demo app, with a different industry application for each prospect, used to show how Novus builds its overview on first scan.
 Front end only, mock data, no backend. Published on GitHub Pages: https://darrenhuggins.github.io/northwind-claims/
+
+## Industries
+
+The first screen is an industry picker. Choosing one opens a full app for that vertical, then a persona sign-in.
+Insurance (Northwind Claims), Banking, Healthcare, Retail, Telecom, Manufacturing, Travel & Hospitality, Public Sector and HR & Workforce.
+Each non-insurance vertical is defined as data in `src/verticals/defs.ts` (entities, fields, dashboard, wizard, rules, integrations, agents) and rendered by shared pages in `src/pages/generic.tsx`: about 16 pages and 2 AI agents each. To add a vertical, add one entry to `VERTICALS`.
+Deep link straight to one with `#/?v=banking`.
+
+## Northwind Claims (insurance)
 
 - About 26 routes (HashRouter): dashboard, claims list and detail, a four-step loss report, assignments, reserves, fraud, subrogation, payments, batch payments, policies, customers, adjusters, vendors, documents, reports, report builder, audit log, notifications, settings (profile, roles, rules, integrations) and help.
 - Stable `data-testid` attributes on key controls, so tagging and guides have reliable targets.
