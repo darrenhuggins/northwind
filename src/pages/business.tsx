@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { claims, customers, fraudCases, money, payments, policies } from "../data";
 import { Badge, DataTable, Modal, Page, Stat, useToast } from "../components/ui";
+import { AgentLauncher } from "../components/AgentPanel";
 
 export function Fraud() {
   const t = useToast(); const [open, setOpen] = useState<string | null>(null); const fc = fraudCases.find((f) => f.id === open);
@@ -14,7 +15,7 @@ export function Fraud() {
         <p>Claim <Link to={`/claims/${fc.claimId}`}>{fc.claimId}</Link> scored <strong>{fc.score}</strong>.</p>
         <div className="modal-foot"><button data-testid="fraud-clear" onClick={() => { setOpen(null); t.show("Case cleared"); }}>Clear</button>
           <button className="primary" data-testid="fraud-refer" onClick={() => { setOpen(null); t.show("Referred to SIU"); }}>Refer to SIU</button></div></Modal>}
-      {t.node}
+      <AgentLauncher agent="sentinel" ctx={{ caseId: open || undefined }} />{t.node}
     </Page>
   );
 }
@@ -71,6 +72,7 @@ export function PolicyDetail() {
       <div className="stats"><Stat id="p-prem" label="Premium" value={money(p.premium)} /><Stat id="p-lim" label="Limit" value={money(p.limit)} /><Stat id="p-ded" label="Deductible" value={money(p.deductible)} /><Stat id="p-st" label="Status" value={p.status} /></div>
       <h3 className="section">Claims on this policy</h3>
       <DataTable id="policy-claims" rows={cl} pageSize={6} cols={[{ key: "id", label: "Claim", render: (r) => <Link to={`/claims/${r.id}`}>{r.id}</Link> }, { key: "peril", label: "Peril" }, { key: "status", label: "Status", render: (r) => <Badge v={r.status} /> }, { key: "amount", label: "Claimed", align: "right", render: (r) => money(r.amount) }]} />
+      <AgentLauncher agent="coverage" ctx={{ policyId: p.id }} />
     </Page>
   );
 }

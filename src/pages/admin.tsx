@@ -2,6 +2,8 @@ import { useState } from "react";
 import { adjusters, auditLog, claims, documents, integrations, money, roles, rules, vendors, LOBS } from "../data";
 import { Badge, Bars, DataTable, Modal, Page, Stat, Toggle, useToast } from "../components/ui";
 import { useUser } from "../user";
+import { AGENTS } from "../agents/registry";
+import { AgentLauncher } from "../components/AgentPanel";
 
 export function Adjusters() {
   return (
@@ -129,6 +131,25 @@ export function Help() {
       <input data-testid="help-search" placeholder="Search articles" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="card pad">{faq.filter((f) => f.toLowerCase().includes(q.toLowerCase())).map((f, i) => <details key={f} data-testid={`faq-${i}`}><summary>{f}</summary><p className="muted">See the claims handbook, section {i + 1}. Contact your manager for exceptions.</p></details>)}</div>
       <Stat id="help-total" label="Articles" value={faq.length} />
+    </Page>
+  );
+}
+
+export function Agents() {
+  const [on, setOn] = useState(Object.fromEntries(AGENTS.map((a) => [a.key, true]))); const [open, setOpen] = useState<string | null>(null);
+  const stats = (i: number) => ({ chats: 120 + i * 37, resolved: 62 + i * 4, avg: (1.1 + i * 0.3).toFixed(1) });
+  return (
+    <Page id="agents" title="AI agents" sub="Assistants embedded across the claims workflow">
+      <div className="stats"><Stat id="ag-count" label="Agents" value={AGENTS.length} /><Stat id="ag-live" label="Enabled" value={AGENTS.filter((a) => on[a.key]).length} /><Stat id="ag-conv" label="Conversations (30d)" value={AGENTS.reduce((s, _a, i) => s + stats(i).chats, 0)} /></div>
+      <div className="grid3">{AGENTS.map((a, i) => { const s = stats(i); return (
+        <div key={a.key} className="card pad" data-testid={`agent-card-${a.key}`}>
+          <div className="rule" style={{ padding: 0, border: 0 }}><h3>✦ {a.name}</h3><Toggle id={`agent-toggle-${a.key}`} on={on[a.key]} onChange={(v) => setOn({ ...on, [a.key]: v })} /></div>
+          <p className="muted">{a.tagline}</p>
+          <p className="muted">Model {a.model} · Owner {a.owner}</p>
+          <p>{s.chats} chats · {s.resolved}% resolved · {s.avg}s avg</p>
+          <button data-testid={`agent-open-${a.key}`} onClick={() => setOpen(a.key)}>Try it</button>
+        </div>); })}</div>
+      {open && <AgentLauncher agent={open as any} />}
     </Page>
   );
 }

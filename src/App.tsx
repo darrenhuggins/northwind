@@ -2,7 +2,7 @@ import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from "reac
 import { PERSONAS, useUser } from "./user";
 import { Dashboard, ClaimsList, ClaimDetail, NewClaim, Assignments, Reserves } from "./pages/claims";
 import { Fraud, Payments, BatchPayments, Subrogation, Policies, PolicyDetail, Customers, CustomerDetail } from "./pages/business";
-import { Adjusters, Vendors, Documents, Reports, ReportBuilder, Audit, Notifications, Profile, Roles, Rules, Integrations, Help } from "./pages/admin";
+import { Adjusters, Vendors, Documents, Reports, ReportBuilder, Audit, Notifications, Profile, Roles, Rules, Integrations, Help, Agents } from "./pages/admin";
 
 const NAV: { group: string; items: [string, string][] }[] = [
   { group: "Overview", items: [["/", "Dashboard"]] },
@@ -12,6 +12,7 @@ const NAV: { group: string; items: [string, string][] }[] = [
   { group: "Customers", items: [["/policies", "Policies"], ["/customers", "Customers"]] },
   { group: "Network", items: [["/adjusters", "Adjusters"], ["/vendors", "Vendors"]] },
   { group: "Content", items: [["/documents", "Documents"]] },
+  { group: "AI", items: [["/agents", "AI agents"]] },
   { group: "Insight", items: [["/reports", "Reports"], ["/reports/builder", "Report builder"]] },
   { group: "Governance", items: [["/audit", "Audit log"], ["/notifications", "Notifications"]] },
   { group: "Settings", items: [["/settings/profile", "My profile"], ["/settings/roles", "Roles & access"], ["/settings/rules", "Business rules"], ["/settings/integrations", "Integrations"]] },
@@ -68,7 +69,7 @@ export default function App() {
             <Route path="/audit" element={<Audit />} /><Route path="/notifications" element={<Notifications />} />
             <Route path="/settings/profile" element={<Profile />} /><Route path="/settings/roles" element={<Roles />} />
             <Route path="/settings/rules" element={<Rules />} /><Route path="/settings/integrations" element={<Integrations />} />
-            <Route path="/help" element={<Help />} />
+            <Route path="/help" element={<Help />} /><Route path="/agents" element={<Agents />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

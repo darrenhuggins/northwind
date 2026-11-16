@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { adjusters, claims, customers, documents, LOBS, money, PERILS, STATUSES, payments } from "../data";
 import { Badge, Bars, DataTable, Modal, Page, Stat, useToast } from "../components/ui";
+import { AgentLauncher } from "../components/AgentPanel";
 
 export function Dashboard() {
   const open = claims.filter((c) => !["Closed", "Denied"].includes(c.status));
@@ -77,6 +78,7 @@ export function ClaimDetail() {
       {modal === "pay" && <Modal title="Request payment" testid="modal-pay" onClose={() => setModal(null)}>
         <input data-testid="pay-amount" type="number" placeholder="Amount" /><select data-testid="pay-method"><option>ACH</option><option>Check</option><option>Virtual card</option></select>
         <div className="modal-foot"><button className="primary" data-testid="pay-confirm" onClick={() => { setModal(null); t.show("Payment requested"); }}>Submit</button></div></Modal>}
+      <AgentLauncher agent="copilot" ctx={{ claimId: c.id }} slot={1} /><AgentLauncher agent="reserve" ctx={{ claimId: c.id }} slot={0} />
       {t.node}
     </Page>
   );
@@ -102,7 +104,7 @@ export function NewClaim() {
           {step < 4 ? <button className="primary" data-testid="fnol-next" onClick={() => setStep(step + 1)}>Continue</button>
             : <button className="primary" data-testid="fnol-submit" onClick={() => { t.show("Claim CLM-10999 created"); setTimeout(() => nav("/claims"), 900); }}>Submit claim</button>}
         </div>
-      </div>{t.node}
+      </div><AgentLauncher agent="intake" />{t.node}
     </Page>
   );
 }
@@ -115,7 +117,7 @@ export function Assignments() {
         actions={<button className="primary" data-testid="assign-auto" onClick={() => { setRows([]); t.show("Auto-assigned by region and caseload"); }}>Auto-assign all</button>}
         cols={[{ key: "id", label: "Claim" }, { key: "lob", label: "Line" }, { key: "severity", label: "Severity", render: (r) => <Badge v={r.severity} /> }, { key: "location", label: "Location" },
           { key: "adjuster", label: "Suggested adjuster" }, { key: "status", label: "", render: (r) => <button data-testid={`assign-${r.id}`} onClick={(e) => { e.stopPropagation(); setRows(rows.filter((x) => x.id !== r.id)); t.show(`${r.id} assigned`); }}>Assign</button> }]} />
-      {t.node}
+      <AgentLauncher agent="dispatch" />{t.node}
     </Page>
   );
 }
