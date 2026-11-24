@@ -14,7 +14,7 @@ const Ctx = createContext<{ user: User | null; signIn: (u: User) => void; signOu
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch { return null; } });
   const signIn = (u: User) => { try { localStorage.setItem(KEY, JSON.stringify(u)); } catch { /* ignore */ } setUser(u); };
-  const signOut = () => { try { localStorage.removeItem(KEY); } catch { /* ignore */ } setUser(null); };
+  const signOut = () => { try { localStorage.removeItem(KEY); } catch { /* ignore */ } setUser(null); pendo.clearSession?.(); };
   return <Ctx.Provider value={{ user, signIn, signOut }}>{children}</Ctx.Provider>;
 }
 export const useUser = () => useContext(Ctx);
