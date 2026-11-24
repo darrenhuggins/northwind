@@ -140,8 +140,16 @@ function GenericApp({ v }: { v: Vertical }) {
 }
 
 export default function App() {
-  const { vkey } = useVertical(); const c = CARDS.find((x) => x.key === vkey);
+  const { vkey } = useVertical(); const { user } = useUser(); const c = CARDS.find((x) => x.key === vkey);
   useEffect(() => { document.title = c ? c.product : "Northwind"; }, [c]);
+  // Identify the signed-in persona (on sign-in and when restored from localStorage) and the industry application as the account.
+  useEffect(() => {
+    if (!user || !c) return;
+    pendo.identify({
+      visitor: { id: user.id, full_name: user.name, role: user.role, region: user.region, team: user.team, accountId: vkey },
+      account: { id: c.key, name: c.name, product: c.product },
+    });
+  }, [user, c, vkey]);
   const style = c ? ({ "--brand": c.accent, "--side": c.side } as React.CSSProperties) : undefined;
   return <div style={style}>{!c ? <Landing /> : c.key === "insurance" ? <InsuranceApp /> : <GenericApp key={c.key} v={vertical(c.key)!} />}</div>;
 }
